@@ -191,7 +191,7 @@ class freeCoG:
         # Check if subj is valid
         if not os.path.isdir(os.path.join(self.subj_dir, self.subj)):
             print('No such subject directory as %s' % (os.path.join(self.subj_dir, self.subj)))
-            ans = raw_input('Would you like to create a new subject directory? (y/N): ')
+            ans = input('Would you like to create a new subject directory? (y/N): ')
             if ans.upper() == 'Y' or ans.upper() == 'YES':
                 os.chdir(self.subj_dir)
                 print("Making subject directory")
@@ -306,7 +306,7 @@ class freeCoG:
         
         '''
         
-        from surface_warping_scripts.make_outer_surf import make_outer_surf # From ielu
+        from .surface_warping_scripts.make_outer_surf import make_outer_surf # From ielu
         # Create mask of pial surface
         hems = ['lh', 'rh']
         for hem in hems:
@@ -652,11 +652,11 @@ class freeCoG:
             # project the electrodes to the convex hull of the pial surface
             print('Projection direction vector: ', direction)
         else:
-            proj_direction = raw_input('Enter a custom projection direction as a string (lh,rh,top,bottom,front,back,or custom): If none provided, will default to hemisphere: \n')
+            proj_direction = input('Enter a custom projection direction as a string (lh,rh,top,bottom,front,back,or custom): If none provided, will default to hemisphere: \n')
             if proj_direction == 'custom':
-                x = raw_input('Enter projection vector\'s x-component: \n')
-                y = raw_input('Enter projection vector\'s y-component: \n')
-                z = raw_input('Enter projection vector\'s z-component: \n')
+                x = input('Enter projection vector\'s x-component: \n')
+                y = input('Enter projection vector\'s y-component: \n')
+                z = input('Enter projection vector\'s z-component: \n')
                 direction = [float(x),float(y),float(z)]
             elif proj_direction not in ['lh','rh','top','bottom','front','back','custom']:
                 direction = self.hem
@@ -967,26 +967,26 @@ class freeCoG:
         else: #interactive
             done = False
             while done == False:
-                num_empty_rows = raw_input('Are you adding a row that will be NaN in the elecmatrix? If not, press enter. If so, enter the number of empty rows to add: \n')
+                num_empty_rows = input('Are you adding a row that will be NaN in the elecmatrix? If not, press enter. If so, enter the number of empty rows to add: \n')
                 if len(num_empty_rows):
                     num_empty_rows = int(num_empty_rows)
-                    short_name_prefix = raw_input('What is the short name prefix (e.g. G, AD, HD)?\n')
+                    short_name_prefix = input('What is the short name prefix (e.g. G, AD, HD)?\n')
                     short_names.extend([short_name_prefix for i in range(1,num_empty_rows+1)])
-                    long_name_prefix = raw_input('What is the long name prefix (e.g. L256Grid, HippocampalDepth)?\n')
+                    long_name_prefix = input('What is the long name prefix (e.g. L256Grid, HippocampalDepth)?\n')
                     long_names.extend([long_name_prefix for i in range(1,num_empty_rows+1)])
-                    elec_type = raw_input('What is the type of the device (e.g. grid, strip, depth)?\n')
+                    elec_type = input('What is the type of the device (e.g. grid, strip, depth)?\n')
                     elec_types.extend([elec_type for i in range(num_empty_rows)])
                     elecmatrix_all.append(np.ones((num_empty_rows,3))*np.nan)
                 else:
-                    short_name_prefix = raw_input('What is the short name prefix of the device (e.g. G, AD, HD)?\n')
-                    long_name_prefix = raw_input('What is the long name prefix of the device? (e.g. L256Grid, HippocampalDepth)\n')
-                    elec_type = raw_input('What is the type of the device? (e.g. grid, strip, depth)\n')     
+                    short_name_prefix = input('What is the short name prefix of the device (e.g. G, AD, HD)?\n')
+                    long_name_prefix = input('What is the long name prefix of the device? (e.g. L256Grid, HippocampalDepth)\n')
+                    elec_type = input('What is the type of the device? (e.g. grid, strip, depth)\n')     
                     try:
-                        file_name = raw_input('What is the filename of the device\'s electrode coordinate matrix?\n')
+                        file_name = input('What is the filename of the device\'s electrode coordinate matrix?\n')
                         indiv_file = os.path.join(self.elecs_dir,'individual_elecs', file_name)
                         elecmatrix = scipy.io.loadmat(indiv_file)['elecmatrix']
                     except IOError:
-                        file_name = raw_input('Sorry, that file was not found. Please enter the correct filename of the device: \n ')
+                        file_name = input('Sorry, that file was not found. Please enter the correct filename of the device: \n ')
                         indiv_file = os.path.join(self.elecs_dir,'individual_elecs', file_name)
                         elecmatrix = scipy.io.loadmat(indiv_file)['elecmatrix']
                     num_elecs = elecmatrix.shape[0]
@@ -994,10 +994,10 @@ class freeCoG:
                     short_names.extend([short_name_prefix+str(i) for i in range(1,num_elecs+1)])
                     long_names.extend([long_name_prefix+str(i) for i in range(1,num_elecs+1)])
                     elec_types.extend([elec_type for i in range(num_elecs)])
-                completed = raw_input('Finished entering devices? Enter \'y\' if finished.')
+                completed = input('Finished entering devices? Enter \'y\' if finished.')
                 if completed=='y':
                     done = True 
-            outfile = raw_input('What filename would you like to save out to?\n')
+            outfile = input('What filename would you like to save out to?\n')
         elecmatrix_all = np.vstack(elecmatrix_all)
         eleclabels = np.ones(elecmatrix_all.shape,dtype=np.object)
         eleclabels[:,0] = short_names
@@ -1755,7 +1755,7 @@ class freeCoG:
         cmap = matplotlib.colors.ListedColormap(np.load(fs_lut)[:cvs_dat.max()+1,:])
 
         lookupTable = os.path.join(self.img_pipe_dir, 'SupplementalFiles', 'FreeSurferLookupTable')
-        lookup_dict = pickle.load(open(lookupTable,'r'))
+        lookup_dict = pickle.load(open(lookupTable,'rb'))
         fig = plt.figure(figsize=((30,17)))
         nonzero_indices = np.where(cvs_dat>0)
         offset = 35 #this is how much you want to trim the mri by, there is a lot of empty space
@@ -1765,19 +1765,19 @@ class freeCoG:
 
         plt.subplot(2,3,1)
         plt.imshow(cvs_dat[cvs_vox_CRS[0],:,:], cmap=cmap)
-        plt.plot(cvs_vox_CRS[2],cvs_vox_CRS[1],'r*',markersize=14,color='#FFFFFF')
+        plt.plot(cvs_vox_CRS[2],cvs_vox_CRS[1],'r*',markersize=14,markerfacecolor='#FFFFFF',markeredgecolor='black')
         plt.axis('tight'); ax = plt.gca(); ax.set_axis_off()
 
         plt.subplot(2,3,2)
         plt.imshow(cvs_dat[:,cvs_vox_CRS[1],:].T, cmap=cmap)
-        plt.plot(cvs_vox_CRS[0],cvs_vox_CRS[2],'r*',markersize=14,color='#FFFFFF')
+        plt.plot(cvs_vox_CRS[0],cvs_vox_CRS[2],'r*',markersize=14,markerfacecolor='#FFFFFF',markeredgecolor='black')
         plt.axis('tight'); ax = plt.gca(); ax.set_axis_off()
         #t=plt.text(10,25,lookup_dict[cvs_dat[cvs_vox_CRS[0],cvs_vox_CRS[1],cvs_vox_CRS[2]]],color='white',size=25)
         plt.title('CVS brain ' + lookup_dict[cvs_dat[cvs_vox_CRS[0],cvs_vox_CRS[1],cvs_vox_CRS[2]]],size=20)
 
         plt.subplot(2,3,3)
         plt.imshow(cvs_dat[:,:,cvs_vox_CRS[2]].T, cmap=cmap)   
-        plt.plot(cvs_vox_CRS[0],cvs_vox_CRS[1],'r*',markersize=14,color='#FFFFFF')
+        plt.plot(cvs_vox_CRS[0],cvs_vox_CRS[1],'r*',markersize=14,markerfacecolor='#FFFFFF',markeredgecolor='black')
         plt.axis('tight'); ax = plt.gca(); ax.set_axis_off()
 
         subj_dat = subj_dat[offset:-offset,offset:-offset,offset:-offset]
@@ -1785,19 +1785,19 @@ class freeCoG:
 
         ax1=plt.subplot(2,3,4).axes
         plt.imshow(subj_dat[subj_vox_CRS[0],:,:], cmap=cmap)
-        plt.plot(subj_vox_CRS[2],subj_vox_CRS[1],'r*',markersize=14,color='#FFFFFF')
+        plt.plot(subj_vox_CRS[2],subj_vox_CRS[1],'r*',markersize=14,markerfacecolor='#FFFFFF',markeredgecolor='black')
         plt.axis('tight'); ax = plt.gca(); ax.set_axis_off()
 
         ax2=plt.subplot(2,3,5).axes
         plt.imshow(subj_dat[:,subj_vox_CRS[1],:].T, cmap=cmap)
-        plt.plot(subj_vox_CRS[0],subj_vox_CRS[2],'r*',markersize=14,color='#FFFFFF')
+        plt.plot(subj_vox_CRS[0],subj_vox_CRS[2],'r*',markersize=14,markerfacecolor='#FFFFFF',markeredgecolor='black')
         plt.axis('tight'); ax = plt.gca(); ax.set_axis_off()
         #t=plt.text(10,25,lookup_dict[subj_dat[subj_vox_CRS[0],subj_vox_CRS[1],subj_vox_CRS[2]]],color='white',size=25)
         plt.title(self.subj + ' ' +lookup_dict[subj_dat[subj_vox_CRS[0],subj_vox_CRS[1],subj_vox_CRS[2]]],size=20)
 
         ax3=plt.subplot(2,3,6).axes
         plt.imshow(subj_dat[:,:,subj_vox_CRS[2]].T, cmap=cmap)   
-        plt.plot(subj_vox_CRS[0],subj_vox_CRS[1],'r*',markersize=14,color='#FFFFFF')
+        plt.plot(subj_vox_CRS[0],subj_vox_CRS[1],'r*',markersize=14,markerfacecolor='#FFFFFF',markeredgecolor='black')
         plt.axis('tight'); ax = plt.gca(); ax.set_axis_off()
 
         if cvs_dat[cvs_vox_CRS[0],cvs_vox_CRS[1],cvs_vox_CRS[2]] != subj_dat[subj_vox_CRS[0],subj_vox_CRS[1],subj_vox_CRS[2]]:
@@ -2478,7 +2478,7 @@ class freeCoG:
         lookup = {vertnums[i]:i for i in range(len(vertnums))}
        
         tri_list_reindexed = np.copy(tri_list)
-        for k, v in lookup.iteritems():
+        for k, v in lookup.items():
             tri_list_reindexed[tri_list==k] = v
 
         roi_mesh['tri'] = tri_list_reindexed

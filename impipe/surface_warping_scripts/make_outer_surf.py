@@ -34,7 +34,7 @@ def make_outer_surf(orig_pial, image, radius, outfile):
 
     image_f = np.zeros((256,256,256))
 
-    for slice in xrange(256):
+    for slice in range(256):
         temp = filld[:,:,slice]
         image_f[:,:,slice] = convolve(temp, gaussian, 'same')
 

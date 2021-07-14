@@ -263,7 +263,7 @@ class electrode_picker:
         # Plot sagittal, coronal, and axial views 
         for i in np.arange(3):
             self.ax.append(self.fig.add_subplot(2,2,i+1))
-            self.ax[i].set_axis_bgcolor('k')
+            self.ax[i].set_facecolor('k')
             if i==0:
                 imdata = img_data[cs[0],:,:].T
                 ctdat  = ct_data[cs[0],:,:].T
@@ -313,7 +313,7 @@ class electrode_picker:
         # Plot the maximum intensity projection
         self.ct_slice = 's' # Show sagittal MIP to start
         self.ax.append(self.fig.add_subplot(2,2,4))
-        self.ax[3].set_axis_bgcolor('k')
+        self.ax[3].set_facecolor('k')
         self.im.append(plt.imshow(np.nanmax(ct_data[cs[0]-15:cs[0]+15,:,:], axis=0).T, cmap=cm.gray, aspect='auto'))
         self.cursor.append(plt.plot([cs[1], cs[1]], [self.ax[3].get_ylim()[0]+1, self.ax[3].get_ylim()[1]-1], color=[0, 1, 0] ))
         self.cursor2.append(plt.plot([self.ax[3].get_xlim()[0]+1, self.ax[3].get_xlim()[1]-1], [cs[2], cs[2]], color=[0, 1, 0] ))
